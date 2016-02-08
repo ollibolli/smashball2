@@ -49,7 +49,6 @@ function playerFactory(id, options){
                 this.angle = options.angleMin;
             }
         }
-
     }
 
     // render

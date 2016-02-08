@@ -14,7 +14,6 @@ function boardFactory(offsetX, offsetY, width, height) {
     base_image.src = './images/background.png';
     var loading = true;
     base_image.onload = function(){
-        console.log('[Image.onload]', "backgroud loaded");
         loading = false;
     };
 

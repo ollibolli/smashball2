@@ -1,6 +1,7 @@
     'use strict';
     var Base = require('../sb/Base');
     var _ = require('../utils/_');
+
     Venue.inherits(Base);
 
     /**
@@ -8,7 +9,7 @@
      * @param graphic [sb/Graphic]
      */
     function Venue(){
-        Base.prototype.constructor.call(this);
+        Venue.super_.call(this);
         this._entityPool = {};
         this._onStage = {};
     };
@@ -83,7 +84,7 @@
     };
 
     Venue.prototype.getEntityById = function(id){
-        return null;
+        return this._entityPool[id];
     };
 
     Venue.prototype.getGraphic = function(){

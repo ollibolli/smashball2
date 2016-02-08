@@ -5,7 +5,7 @@ var  Component = require('../comp/Component');
 Pos.inherits(Component);
 
 function Pos(vector){
-    Component.call(this);
+    Pos.super_.call(this);
     this._pos = vector;
 }
 

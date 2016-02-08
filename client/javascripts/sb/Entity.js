@@ -30,12 +30,7 @@ Entity.prototype.hasComponent = function(){
 }
 
 Entity.prototype.getComponent = function(name){
-    var component = this._components[name];
-    if (component) {
-        return component;
-    } else {
-        throw new Error('[Entity.getComponent] missing requested component '+ name);
-    }
+    return this._components[name];
 };
 
 Entity.prototype.removeComponent = function(component){
@@ -60,12 +55,12 @@ Entity.prototype.activateSubs = function(){
 
 Entity.prototype.deactivateSubs = function(){
     for (var topic in this._subscriptions){
-        cosmos.removeListener(this._subscriptions[topic]);
+        cosmos.removeListener(topic, this._subscriptions[topic]);
     }
 };
 
 Entity.prototype.publish = function(topic, data){
-    cosmos.emit(data);
+    cosmos.emit(topic, data);
 };
 
 //    Entity.prototype.setGraphic = function (venue){

@@ -81,5 +81,8 @@ GameLoop.prototype.getGraphic = function () {
   if (!this._graphic) throw new Error('[Gameloop.getGraphic] Graphic on Gameloop not set');
   return this._graphic
 };
+GameLoop.prototype.getGameTicks = function(){
+  return this._loops;
+};
 
 module.exports = GameLoop;

@@ -9,7 +9,6 @@ var Graphic = require('../../sb/Graphic');
 var eventBus = require('../../cosmos_')();
 var CollisionConsequence = require('../../sb/CollisionConsequence');
 var obstacleFactory = require('../entities/obstacle_');
-var opponentFactory = require('../entities/opponent_');
 var Move = require('../../sb/comp/Move');
 var FnDecorator = require('../../sb/comp/FnMoveDecorator');
 var FrictionMoveDecorator = require('../../sb/comp/FrictionMoveDecorator');
@@ -106,7 +105,7 @@ BasicScene.prototype.load = function(){
     this.addEntity(scoreP1);
     this.addToStage(scoreP1);
 
-    var scoreP2 = new Entity('player1Score');
+    var scoreP2 = new Entity('player2Score');
     scoreP2.addComponent(new Pos(new Vector(10,10)));
     scoreP2.addComponent(new Render(function(graphic){
         var context = graphic.context;
@@ -123,13 +122,12 @@ BasicScene.prototype.load = function(){
     eventBus.on('player1/launchBall',function(options){
         options.player = 'player1';
         options.ball = player1BallInChamber;
-        console.log('[BasicScene.]', options);
         if (player1BallInChamber) {
-            fireBall.call(this, type, options);
+            fireBall.call(this, options);
             player1BallInChamber = null;
             setTimeout(function(){
                 player1BallInChamber = prepareBall.call(this, position.multiply(1), 200, null, null);
-            }.bind(this),5000);
+            }.bind(this),1000);
         }
     }.bind(this));
 
@@ -137,20 +135,19 @@ BasicScene.prototype.load = function(){
         options.player = 'player2';
         options.ball = player2BallInChamber;
         if (player2BallInChamber) {
-            fireBall.call(this, type, options);
+            fireBall.call(this, options);
             player2BallInChamber = null;
             setTimeout(function(){
                 player2BallInChamber = prepareBall.call(this, position2.multiply(1), null, 200, null);
-            }.bind(this),5000);
+            }.bind(this),1000);
         }
     }.bind(this));
 
-    function fireBall(type, options){
+    function fireBall(options){
         //var ball = new Ball('ball'+ballIndex,options.pos,options.velocity.multiply(3), null, 200, null);
         ballIndex++;
         var ball = options.ball;
         ball.player = options.player;
-        console.log('[BasicScene.]', options);
         var move = new Move((new Vector(options.velocity.x, options.velocity.y)).multiply(2));
         move = new FnDecorator(move, new Vector(300,220),-0.0007);
         move = new FrictionMoveDecorator(move,0.995);
@@ -172,13 +169,13 @@ BasicScene.prototype.load = function(){
             player1Balls++;
             if (player1Balls > 9){
                 updateText('<h1>Player 1 is the winner</h1>');
-                eventBus.publish('gameloop/stop', {});
+                eventBus.emit('gameloop/stop', {});
             }
         } else if (entity.player === 'player2'){
             player2Balls++;
             if (player2Balls > 9){
                 updateText('<h1>Player 2 is the winner</h1>');
-                eventBus.publish('gameloop/stop', {});
+                eventBus.emit('gameloop/stop', {});
             }
         }
         this.removeEntity(entity);
@@ -195,8 +192,6 @@ BasicScene.prototype.load = function(){
         this.addToStage(ball);
         return ball;
     };
-
-
 
     function updateScore(){
         var el = document.getElementById('score');

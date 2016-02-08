@@ -1,4 +1,4 @@
-var koa = require('koa.io');
+var koa = require('koa');
 var static = require('koa-static');
 var app = koa();
 var path = require('path');
@@ -13,45 +13,21 @@ app.use(function *(next){
 });
 app.use(static(__dirname + '/../public/'));
 
-var roomHandler = new RoomHandler(app.io);
 
-app.io.use(function* (next) {
-  try { // on connect
-    console.log(this.socket.handshake.headers.cookie);
-    yield* next;
-  } catch (e) {
-    console.log(e);
-    console.log(e.stack);
-  }
-});
+var server = require('http').createServer(app.callback());
+var io = require('socket.io')(server);
 
-app.io.use(function* (next) {
-  try { // on connect
-    roomHandler.connection(this.socket);
-    yield* next;
-    roomHandler.disconnecting(this.socket);
-  } catch (e) {
-    console.log(e);
-    console.log(e.stack);
-  }
-});
+var roomHandler = new RoomHandler(io);
 
-app.io.route('handshake', function* () {
-  // we tell the client to execute 'new message'
-  var message = this.args[0];
-  this.broadcast.emit('new message', message);
-});
-
-/*
 io.on('connection', function(socket){
-  socket.emit('go', {pow :'POW'});
-  console.log('a user connected');
-  roomHandler.connection(socket);
-
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
+  socket.on('handshake', handshake)
 });
-*/
 
-module.exports = app;
+function handshake(data){
+  roomHandler.connect(this, data);
+  this.on('disconnect', () => {
+    roomHandler.disconnect(this, data);
+  });
+}
+
+module.exports = server;

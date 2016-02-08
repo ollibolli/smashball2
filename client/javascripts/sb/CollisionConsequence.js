@@ -19,7 +19,7 @@ CollisionConsequence.prototype._onGameTick = function(){
         for (j = i + 1; j < entities.length; j++) {
             var collision = CollisionConsequence.checkCollision(entities[j].getComponent('Collision'), entities[i].getComponent('Collision'));
             if (collision) {
-                eventBus.publish("collision", {});
+                eventBus.emit("collision", {});
             }
         }
     }
@@ -68,7 +68,7 @@ CollisionConsequence.holeCircle = function(hole, circle){
     }
 
     if (deltaVLength < 5) {
-        eventBus.publish('collectEntity', circle.getEntity());
+        eventBus.emit('collectEntity', circle.getEntity());
     }
     return true;
 };
@@ -79,7 +79,7 @@ CollisionConsequence.boundaryCircle = function(circle, square){
       circle.position.y >= square.position.y + (square.height/2) ||
       circle.position.y <= square.position.y - (square.height/2))
     {
-        eventBus.publish('deleteEntity', circle.getEntity());
+        eventBus.emit('deleteEntity', circle.getEntity());
         return true;
     }
     return false;

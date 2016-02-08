@@ -9,6 +9,7 @@ function Cosmos() {
 }
 
 var cosmos = new Cosmos();
+cosmos.setMaxListeners(100);
 
 module.exports = function(){
     return cosmos
